@@ -1,0 +1,180 @@
+/* --- Hydro-Plante : design moderne, responsive, scalable --- */
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+:root {
+  --color-bg: #f0f7f0;
+  --color-surface: #ffffff00;
+  --color-primary: #2e7d32;
+  --color-primary-dark: #1b5e20;
+  --color-primary-light: #43a047;
+  --color-text: #1b3d1f;
+  --color-text-muted: #558b2f;
+  --color-wilted: #c0a020;
+  --color-dead: #5d4037;
+  --shadow-sm: 0 2px 8px rgba(27, 94, 32, 0.08);
+  --shadow-md: 0 4px 16px rgba(27, 94, 32, 0.12);
+  --radius: 1rem;
+  --radius-btn: 999px;
+  --safe-top: env(safe-area-inset-top, 0);
+  --safe-bottom: env(safe-area-inset-bottom, 0);
+}
+
+html {
+  font-size: clamp(14px, 2.5vw, 18px);
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  min-height: 100vh;
+  min-height: 100dvh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", sans-serif;
+  background: linear-gradient(160deg, #e8f5e9 0%, #f1f8e9 45%, #fff8e1 100%);
+  color: var(--color-text);
+  padding: var(--safe-top) 1rem var(--safe-bottom);
+}
+
+.app {
+  width: 100%;
+  max-width: 28rem;
+  min-height: min(90vh, 32rem);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: clamp(1rem, 4vw, 2rem);
+}
+
+.header {
+  margin-bottom: clamp(1.5rem, 5vw, 2.5rem);
+  text-align: center;
+}
+
+.header h1 {
+  font-size: clamp(1.5rem, 5vw, 2rem);
+  font-weight: 700;
+  color: var(--color-primary-dark);
+  letter-spacing: -0.02em;
+}
+
+.main {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+}
+
+.plant-area {
+  width: 100%;
+  min-height: clamp(10rem, 35vw, 14rem);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: clamp(0.5rem, 2vw, 1rem);
+  margin-bottom: clamp(1.5rem, 5vw, 2rem);
+  padding: clamp(1rem, 4vw, 1.5rem);
+  background: var(--color-surface);
+  border-radius: var(--radius);
+  transition: box-shadow 0.3s ease, transform 0.3s ease;
+}
+
+.plant-emoji {
+  font-size: clamp(4rem, 18vw, 6rem);
+  line-height: 1;
+  transition: transform 0.35s ease, filter 0.35s ease;
+  user-select: none;
+}
+
+.plant-area.normal .plant-emoji {
+  transform: scale(1);
+  filter: none;
+}
+
+.plant-area.wilted .plant-emoji {
+  transform: scale(0.95);
+  filter: saturate(0.75);
+}
+
+.plant-area.dead .plant-emoji {
+  transform: scale(0.88);
+  filter: grayscale(0.7) brightness(0.9);
+}
+
+.plant-status {
+  font-size: clamp(0.9rem, 2.5vw, 1.05rem);
+  font-weight: 500;
+  color: var(--color-text-muted);
+  text-align: center;
+  line-height: 1.4;
+}
+
+.plant-area.wilted .plant-status {
+  color: var(--color-wilted);
+}
+
+.plant-area.dead .plant-status {
+  color: var(--color-dead);
+}
+
+.water-btn {
+  min-width: min(100%, 18rem);
+  min-height: 3rem;
+  padding: 0.875rem 1.75rem;
+  font-size: clamp(0.95rem, 2.5vw, 1.05rem);
+  font-weight: 600;
+  color: #fff;
+  background: linear-gradient(180deg, var(--color-primary-light) 0%, var(--color-primary) 100%);
+  border: none;
+  border-radius: var(--radius-btn);
+  cursor: pointer;
+  box-shadow: var(--shadow-md);
+  transition: transform 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
+}
+
+.water-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(46, 125, 50, 0.35);
+}
+
+.water-btn:active {
+  transform: translateY(0);
+  box-shadow: var(--shadow-sm);
+}
+
+.water-btn:focus {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 3px;
+}
+
+.water-btn:focus:not(:focus-visible) {
+  outline: none;
+}
+
+.water-btn:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 3px;
+}
+
+@media (max-width: 480px) {
+  .app {
+    min-height: auto;
+  }
+
+  .water-btn {
+    min-height: 2.75rem;
+  }
+}

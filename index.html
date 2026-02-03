@@ -1,26 +1,25 @@
 <!DOCTYPE html>
 <html lang="fr">
-  <head>
-    <meta charset="UTF-8" />
-    <link rel="icon" href="/plante.png" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=no, maximum-scale=1.0" />
-    <meta name="description" content="Hydro-plante - Une application gamifiée pour vous rappeler de boire de l'eau en prenant soin d'une plante virtuelle" />
-    <meta name="theme-color" content="#10b981" />
-    <meta name="apple-mobile-web-app-capable" content="yes" />
-    <meta name="mobile-web-app-capable" content="yes" />
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
-    <meta name="apple-mobile-web-app-title" content="Hydro-plante" />
-    <link rel="apple-touch-icon" href="/plante.png" />
-    <link rel="manifest" href="/manifest.json" />
-    <title>🌱 Hydro-plante - Rappel d'hydratation</title>
-  </head>
-  <body>
-    <div id="app"></div>
-    <script type="module" src="/src/main.js"></script>
-    <script>
-      if ('serviceWorker' in navigator) {
-        navigator.serviceWorker.register('/sw.js')
-      }
-    </script>
-  </body>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <meta name="theme-color" content="#1b5e20">
+  <title>Hydro-Plante</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="app">
+    <header class="header">
+      <h1>Hydro-Plante</h1>
+    </header>
+    <main class="main">
+      <div class="plant-area" id="plantArea" aria-live="polite" role="status">
+        <span class="plant-emoji" id="plantEmoji" aria-hidden="true"></span>
+        <p class="plant-status" id="plantStatus"></p>
+      </div>
+      <button type="button" class="water-btn" id="waterBtn">Arroser la plante</button>
+    </main>
+  </div>
+  <script src="script.js"></script>
+</body>
 </html>
