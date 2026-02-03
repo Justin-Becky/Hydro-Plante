@@ -21,11 +21,12 @@
   var plantStatus = document.getElementById("plantStatus");
   var waterBtn = document.getElementById("waterBtn");
 
-  var emojiByState = {
-    normal: "🌱",
-    wilted: "🪴",
-    dead: "💀"
+  var imageByState = {
+    normal: "images/normale.png",
+    wilted: "images/fannéeed.png",
+    dead: "images/morte.png"
   };
+  
 
   var labelByState = {
     normal: "La plante va bien !",
@@ -64,7 +65,7 @@
    * Met à jour l'affichage de la plante (emoji, texte, classes).
    */
   function renderPlant(state) {
-    plantEmoji.textContent = emojiByState[state];
+    plantEmoji.src = imageByState[state];
     plantStatus.textContent = labelByState[state];
     plantArea.className = "plant-area " + state;
   }
