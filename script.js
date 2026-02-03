@@ -23,7 +23,7 @@
 
   var imageByState = {
     normal: "images/normale.png",
-    wilted: "images/fannéeed.png",
+    wilted: "images/fannée.png",
     dead: "images/morte.png"
   };
   
