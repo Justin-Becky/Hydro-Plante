@@ -35,7 +35,9 @@ def get_plant_status(last_watering):
     if last_watering is None:
         return "wilted", None
     
-    last_water_time = datetime.fromisoformat(last_watering)
+    # Gérer le format ISO avec Z (UTC)
+    last_watering_clean = last_watering.replace('Z', '+00:00')
+    last_water_time = datetime.fromisoformat(last_watering_clean)
     elapsed = datetime.now() - last_water_time
     elapsed_hours = elapsed.total_seconds() / 3600
     
