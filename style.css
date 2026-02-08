@@ -48,7 +48,7 @@ body {
 .app {
   width: 100%;
   max-width: 28rem;
-  min-height: 100vh; /* ← pour occuper toute la hauteur */
+  min-height: 100vh;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -57,7 +57,7 @@ body {
 }
 
 .header {
-  margin-bottom: clamp(1.5rem, 5vw, 2.5rem);
+  margin-bottom: clamp(1rem, 3vw, 1.5rem);
   text-align: center;
 }
 
@@ -77,6 +77,88 @@ body {
   width: 100%;
 }
 
+/* --- Nouveau : Compteur de temps --- */
+.timer-container {
+  width: 100%;
+  max-width: 20rem;
+  margin-bottom: 1.5rem;
+  padding: 1.25rem;
+  background: linear-gradient(135deg, rgba(46, 125, 50, 0.08) 0%, rgba(67, 160, 71, 0.12) 100%);
+  border: 2px solid rgba(46, 125, 50, 0.2);
+  border-radius: var(--radius);
+  text-align: center;
+  box-shadow: var(--shadow-sm);
+  transition: all 0.3s ease;
+}
+
+.timer-label {
+  font-size: clamp(0.8rem, 2vw, 0.9rem);
+  font-weight: 600;
+  color: var(--color-primary-dark);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-bottom: 0.5rem;
+  opacity: 0.8;
+}
+
+.timer-display {
+  font-size: clamp(2rem, 8vw, 3rem);
+  font-weight: 700;
+  color: var(--color-primary);
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -0.02em;
+  line-height: 1.2;
+  text-shadow: 0 2px 4px rgba(46, 125, 50, 0.1);
+}
+
+.timer-hours,
+.timer-minutes {
+  display: inline-block;
+  min-width: 1.5em;
+  text-align: center;
+}
+
+/* Animation quand le temps augmente */
+@keyframes pulse-warning {
+  0%, 100% { 
+    border-color: rgba(46, 125, 50, 0.2);
+    background: linear-gradient(135deg, rgba(46, 125, 50, 0.08) 0%, rgba(67, 160, 71, 0.12) 100%);
+  }
+  50% { 
+    border-color: rgba(192, 160, 32, 0.4);
+    background: linear-gradient(135deg, rgba(192, 160, 32, 0.1) 0%, rgba(192, 160, 32, 0.15) 100%);
+  }
+}
+
+@keyframes pulse-danger {
+  0%, 100% { 
+    border-color: rgba(192, 160, 32, 0.4);
+    background: linear-gradient(135deg, rgba(192, 160, 32, 0.1) 0%, rgba(192, 160, 32, 0.15) 100%);
+  }
+  50% { 
+    border-color: rgba(93, 64, 55, 0.5);
+    background: linear-gradient(135deg, rgba(93, 64, 55, 0.12) 0%, rgba(93, 64, 55, 0.18) 100%);
+  }
+}
+
+/* États du timer selon le temps écoulé */
+.timer-container.warning {
+  animation: pulse-warning 2s ease-in-out infinite;
+}
+
+.timer-container.warning .timer-display {
+  color: var(--color-wilted);
+}
+
+.timer-container.danger {
+  animation: pulse-danger 2s ease-in-out infinite;
+}
+
+.timer-container.danger .timer-display {
+  color: var(--color-dead);
+}
+
+/* --- Plante --- */
 .plant-area {
   width: 100%;
   min-height: clamp(10rem, 35vw, 14rem);
@@ -96,7 +178,6 @@ body {
   width: clamp(16rem, 55vw, 34rem);
   height: auto;
 }
-
 
 .plant-area.normal .plant-emoji {
   transform: scale(1);
@@ -129,6 +210,7 @@ body {
   color: var(--color-dead);
 }
 
+/* --- Bouton --- */
 .water-btn {
   display: inline-flex;
   align-items: center;
@@ -183,5 +265,9 @@ body {
 
   .water-btn {
     min-height: 2.75rem;
+  }
+
+  .timer-display {
+    font-size: clamp(1.75rem, 7vw, 2.5rem);
   }
 }
