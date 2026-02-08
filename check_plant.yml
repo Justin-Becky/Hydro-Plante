@@ -1,0 +1,38 @@
+name: Check Plant Status
+
+on:
+  schedule:
+    # Exécuter toutes les heures
+    - cron: '0 * * * *'
+  workflow_dispatch:  # Permet de lancer manuellement pour tester
+
+jobs:
+  check-plant:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v3
+      with:
+        token: ${{ secrets.GITHUB_TOKEN }}
+    
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.10'
+    
+    - name: Run plant check script
+      env:
+        SENDER_EMAIL: ${{ secrets.SENDER_EMAIL }}
+        SENDER_PASSWORD: ${{ secrets.SENDER_PASSWORD }}
+        RECIPIENT_EMAIL: ${{ secrets.RECIPIENT_EMAIL }}
+      run: |
+        python check_plant.py
+    
+    - name: Commit updated plant state
+      run: |
+        git config --local user.email "github-actions[bot]@users.noreply.github.com"
+        git config --local user.name "github-actions[bot]"
+        git add plant_state.json
+        git diff --quiet && git diff --staged --quiet || git commit -m "Update plant state [bot]"
+        git push
