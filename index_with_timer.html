@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <meta name="theme-color" content="#1b5e20">
+  <title>Hydro-Plante</title>
+  <link rel="apple-touch-icon" href="images/icon.png">
+  <link rel="icon" type="image/png" sizes="512x512" href="images/icon.png">
+  <link rel="manifest" href="manifest.json">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="app">
+    <header class="header">
+      <h1>Hydro-Plante</h1>
+    </header>
+    <main class="main">
+      <!-- Nouveau compteur de temps -->
+      <div class="timer-container">
+        <div class="timer-label">Dernière hydratation</div>
+        <div class="timer-display" id="timerDisplay">
+          <span class="timer-hours" id="timerHours">0</span>h
+          <span class="timer-minutes" id="timerMinutes">00</span>min
+        </div>
+      </div>
+
+      <div class="plant-area" id="plantArea" aria-live="polite" role="status">
+        <img class="plant-emoji" id="plantEmoji" alt="État de la plante" />
+        <p class="plant-status" id="plantStatus"></p>
+      </div>
+      <button type="button" class="water-btn" id="waterBtn">Arroser la plante</button>
+    </main>
+  </div>
+  <script src="script.js"></script>
+</body>
+</html>
