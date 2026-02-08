@@ -8,7 +8,7 @@ import json
 import smtplib
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 
 # Configuration
 PLANT_STATE_FILE = "plant_state.json"
@@ -49,7 +49,13 @@ def get_plant_status(last_watering):
         print(f"⚠️ Format de date invalide : {last_watering}")
         return "wilted", None
     
-    elapsed = datetime.now() - last_water_time
+    # Utiliser UTC pour la comparaison si la date a une timezone
+    if last_water_time.tzinfo is not None:
+        now = datetime.now(timezone.utc)
+    else:
+        now = datetime.now()
+    
+    elapsed = now - last_water_time
     elapsed_hours = elapsed.total_seconds() / 3600
     
     if elapsed_hours < THRESHOLD_WILTED_H:
@@ -66,9 +72,23 @@ def should_send_notification(state, elapsed_hours):
     
     # Vérifier si on n'a pas déjà envoyé de notification récemment
     if state.get("last_notification"):
-        last_notif = datetime.fromisoformat(state["last_notification"])
-        if datetime.now() - last_notif < timedelta(hours=2):
-            return False
+        last_notif_str = state["last_notification"]
+        # Gérer le Z si présent
+        if last_notif_str.endswith('Z'):
+            last_notif_str = last_notif_str[:-1] + '+00:00'
+        
+        try:
+            last_notif = datetime.fromisoformat(last_notif_str)
+            if last_notif.tzinfo is not None:
+                now = datetime.now(timezone.utc)
+            else:
+                now = datetime.now()
+            
+            if now - last_notif < timedelta(hours=2):
+                return False
+        except ValueError:
+            # Si erreur de parsing, on envoie quand même
+            pass
     
     return True
 
