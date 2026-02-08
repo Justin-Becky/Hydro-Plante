@@ -70,21 +70,19 @@ def send_email(recipient_email, plant_status, elapsed_hours):
     
     # Personnaliser le message selon l'état
     if plant_status == "dead":
-        subject = "🚨 Ta plante Hydro-Plante est morte !"
+        subject = "🚨 Ta plante est morte !"
         body = f"""Coucou ! 💚
 
-Ta plante virtuelle Hydro-Plante est morte ! 😢
+Ta plante virtuelle est morte ! 😢
 
 Elle n'a pas été arrosée depuis {elapsed_hours:.1f} heures.
 
 N'oublie pas de boire de l'eau régulièrement ! 💧
-Clique ici pour arroser ta plante (et te rappeler de t'hydrater) : 
-https://ton-username.github.io/hydro-plante/
 
 Bisous ! 🌱
 """
     elif plant_status == "wilted":
-        subject = "💧 Ta plante Hydro-Plante a soif !"
+        subject = "💧 Ta plante a soif !"
         body = f"""Coucou ! 💚
 
 Ta plante virtuelle commence à faner... 🥀
@@ -92,7 +90,6 @@ Ta plante virtuelle commence à faner... 🥀
 Elle n'a pas été arrosée depuis {elapsed_hours:.1f} heures.
 
 C'est le moment de boire un grand verre d'eau ! 💧
-Arrose ta plante ici : https://ton-username.github.io/hydro-plante/
 
 Prends soin de toi ! 🌱
 """
