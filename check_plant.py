@@ -111,8 +111,6 @@ Ta plante virtuelle Hydro-Plante est morte ! 😢
 Elle n'a pas été arrosée depuis {elapsed_hours:.1f} heures.
 
 N'oublie pas de boire de l'eau régulièrement ! 💧
-Clique ici pour arroser ta plante (et te rappeler de t'hydrater) : 
-https://ton-username.github.io/hydro-plante/
 
 Bisous ! 🌱
 """
@@ -125,7 +123,6 @@ Ta plante virtuelle commence à faner... 🥀
 Elle n'a pas été arrosée depuis {elapsed_hours:.1f} heures.
 
 C'est le moment de boire un grand verre d'eau ! 💧
-Arrose ta plante ici : https://ton-username.github.io/hydro-plante/
 
 Prends soin de toi ! 🌱
 """
