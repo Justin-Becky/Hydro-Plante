@@ -25,44 +25,50 @@
   --safe-top: env(safe-area-inset-top, 0);
   --safe-bottom: env(safe-area-inset-bottom, 0);
 }
-html, body { overflow: hidden; }
 
 html {
+  height: 100%;
+  overflow: hidden;
   font-size: clamp(14px, 2.5vw, 18px);
   -webkit-text-size-adjust: 100%;
 }
 
 body {
+  height: 100%;
   min-height: 100vh;
   min-height: 100dvh;
+  overflow: hidden;
   display: flex;
-  align-items: center;
-  justify-content: center;
   flex-direction: column;
+  align-items: center;
+  justify-content: stretch;
   font-family: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", sans-serif;
   background: linear-gradient(160deg, #e8f5e9 0%, #f1f8e9 45%, #fff8e1 100%);
   color: var(--color-text);
-  padding: var(--safe-top) 1rem var(--safe-bottom);
+  padding: var(--safe-top) clamp(0.5rem, 2vw, 1rem) var(--safe-bottom);
 }
 
 .app {
   width: 100%;
-  max-width: 28rem;
-  min-height: 100vh;
+  max-width: 32rem;
+  height: 100%;
+  min-height: 0;
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
-  padding: clamp(1rem, 4vw, 2rem);
+  justify-content: flex-start;
+  padding: clamp(0.4rem, 1.5vh, 1rem) clamp(0.75rem, 3vw, 1.5rem);
+  flex: 1;
 }
 
 .header {
-  margin-bottom: clamp(1rem, 3vw, 1.5rem);
+  flex-shrink: 0;
+  margin-bottom: clamp(0.25rem, 1vh, 0.5rem);
   text-align: center;
 }
 
 .header h1 {
-  font-size: clamp(1.5rem, 5vw, 2rem);
+  font-size: clamp(1.2rem, 4vw, 1.8rem);
   font-weight: 700;
   color: var(--color-primary-dark);
   letter-spacing: -0.02em;
@@ -70,19 +76,21 @@ body {
 
 .main {
   flex: 1;
+  min-height: 0;
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
+  justify-content: space-evenly;
   width: 100%;
+  gap: clamp(0.1rem, 0.3vh, 0.3rem);
 }
 
-/* --- Nouveau : Compteur de temps --- */
+/* --- Compteur de temps (compact) --- */
 .timer-container {
+  flex-shrink: 0;
   width: 100%;
-  max-width: 20rem;
-  margin-bottom: 1.5rem;
-  padding: 1.25rem;
+  max-width: 18rem;
+  padding: clamp(0.35rem, 0.8vh, 0.65rem) clamp(0.5rem, 1.5vw, 0.9rem);
   background: linear-gradient(135deg, rgba(46, 125, 50, 0.08) 0%, rgba(67, 160, 71, 0.12) 100%);
   border: 2px solid rgba(46, 125, 50, 0.2);
   border-radius: var(--radius);
@@ -92,22 +100,22 @@ body {
 }
 
 .timer-label {
-  font-size: clamp(0.8rem, 2vw, 0.9rem);
+  font-size: clamp(0.65rem, 1.6vw, 0.8rem);
   font-weight: 600;
   color: var(--color-primary-dark);
   text-transform: uppercase;
   letter-spacing: 0.05em;
-  margin-bottom: 0.5rem;
+  margin-bottom: clamp(0.15rem, 0.3vh, 0.35rem);
   opacity: 0.8;
 }
 
 .timer-display {
-  font-size: clamp(2rem, 8vw, 3rem);
+  font-size: clamp(1.4rem, 5.5vmin, 2.5rem);
   font-weight: 700;
   color: var(--color-primary);
   font-variant-numeric: tabular-nums;
   letter-spacing: -0.02em;
-  line-height: 1.2;
+  line-height: 1.1;
   text-shadow: 0 2px 4px rgba(46, 125, 50, 0.1);
 }
 
@@ -158,25 +166,29 @@ body {
   color: var(--color-dead);
 }
 
-/* --- Plante --- */
+/* --- Plante (MAXIMISÉE) --- */
 .plant-area {
+  flex: 1;
+  min-height: 0;
   width: 100%;
-  min-height: clamp(10rem, 35vw, 14rem);
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 0.5rem;
-  margin-bottom: 1.5rem;
-  padding: 1rem;
+  gap: clamp(0.2rem, 0.4vh, 0.4rem);
+  padding: clamp(0.2rem, 0.5vh, 0.6rem);
   background: var(--color-surface);
   border-radius: var(--radius);
   transition: box-shadow 0.3s ease, transform 0.3s ease;
 }
 
 .plant-emoji {
-  width: clamp(16rem, 55vw, 34rem);
+  width: auto;
   height: auto;
+  max-width: min(95vw, 30rem);
+  max-height: min(58vh, 26rem);
+  object-fit: contain;
+  flex: 1;
 }
 
 .plant-area.normal .plant-emoji {
@@ -195,11 +207,14 @@ body {
 }
 
 .plant-status {
-  font-size: clamp(0.9rem, 2.5vw, 1.05rem);
+  flex-shrink: 0;
+  font-size: clamp(0.75rem, 2vw, 0.95rem);
   font-weight: 500;
   color: var(--color-text-muted);
   text-align: center;
-  line-height: 1.4;
+  line-height: 1.25;
+  margin-top: clamp(0.15rem, 0.3vh, 0.4rem);
+  margin-bottom: clamp(0.5rem, 1vh, 0.8rem);
 }
 
 .plant-area.wilted .plant-status {
@@ -210,15 +225,16 @@ body {
   color: var(--color-dead);
 }
 
-/* --- Bouton --- */
+/* --- Bouton (compact) --- */
 .water-btn {
+  flex-shrink: 0;
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  min-width: min(100%, 18rem);
-  min-height: 3.25rem;
-  padding: 0.875rem 1.75rem;
-  font-size: clamp(1rem, 2.5vw, 1.125rem);
+  min-width: min(100%, 17rem);
+  min-height: clamp(2.4rem, 7vh, 3rem);
+  padding: clamp(0.45rem, 1.2vh, 0.75rem) clamp(0.9rem, 3.5vw, 1.5rem);
+  font-size: clamp(0.85rem, 2.3vw, 1.05rem);
   font-weight: 600;
   color: #fff;
   background: linear-gradient(145deg, #4caf50, #2e7d32);
@@ -258,16 +274,110 @@ body {
   outline-offset: 3px;
 }
 
+/* Mobile : image encore plus grande */
 @media (max-width: 480px) {
   .app {
-    min-height: auto;
+    padding: clamp(0.3rem, 1.2vh, 0.6rem) 0.5rem;
   }
 
-  .water-btn {
-    min-height: 2.75rem;
+  .header {
+    margin-bottom: clamp(0.2rem, 0.8vh, 0.4rem);
+  }
+
+  .header h1 {
+    font-size: clamp(1.05rem, 4.5vw, 1.4rem);
+  }
+
+  .timer-container {
+    padding: 0.35rem 0.55rem;
+    max-width: 16rem;
+  }
+
+  .timer-label {
+    font-size: 0.6rem;
+    margin-bottom: 0.2rem;
   }
 
   .timer-display {
-    font-size: clamp(1.75rem, 7vw, 2.5rem);
+    font-size: clamp(1.3rem, 6vmin, 2rem);
+  }
+
+  .plant-emoji {
+    max-height: min(52vh, 20rem);
+    max-width: 96vw;
+  }
+
+  .plant-status {
+    font-size: clamp(0.7rem, 2.2vw, 0.85rem);
+    margin-bottom: clamp(0.4rem, 0.8vh, 0.6rem);
+  }
+
+  .water-btn {
+    min-height: clamp(2.3rem, 6.5vh, 2.6rem);
+    padding: 0.4rem 1rem;
+    font-size: clamp(0.8rem, 2.5vw, 0.95rem);
+  }
+}
+
+/* Très petite hauteur (landscape mobile) : image prioritaire */
+@media (max-height: 500px) {
+  .app {
+    padding: 0.25rem 0.5rem;
+  }
+
+  .header {
+    margin-bottom: 0.15rem;
+  }
+
+  .header h1 {
+    font-size: clamp(0.95rem, 3vw, 1.15rem);
+  }
+
+  .timer-container {
+    padding: 0.25rem 0.4rem;
+  }
+
+  .timer-label {
+    font-size: 0.55rem;
+    margin-bottom: 0.1rem;
+  }
+
+  .timer-display {
+    font-size: clamp(1.1rem, 4.5vmin, 1.5rem);
+  }
+
+  .plant-emoji {
+    max-height: 32vh;
+  }
+
+  .plant-status {
+    font-size: 0.7rem;
+    margin-top: 0.1rem;
+    margin-bottom: 0.35rem;
+  }
+
+  .water-btn {
+    min-height: 2.15rem;
+    padding: 0.3rem 0.85rem;
+    font-size: 0.8rem;
+  }
+}
+
+/* Desktop avec grande hauteur : image MAXIMALE */
+@media (min-height: 700px) and (min-width: 481px) {
+  .plant-emoji {
+    max-height: min(65vh, 32rem);
+  }
+
+  .header h1 {
+    font-size: clamp(1.4rem, 3.5vw, 2rem);
+  }
+
+  .timer-display {
+    font-size: clamp(1.8rem, 6vmin, 3rem);
+  }
+
+  .water-btn {
+    min-height: clamp(2.75rem, 8vh, 3.5rem);
   }
 }
