@@ -8,10 +8,10 @@
   "use strict";
 
   // --- Constantes (seuils en heures) ---
-  var THRESHOLD_WILTED_H = 2;   // après 2h sans eau → fanée
-  var THRESHOLD_DEAD_H = 4;     // après 4h sans eau → morte
-  var NOTIFY_AFTER_H = 1;       // envoyer une notification après 1h sans arrosage
-  var NOTIFY_COOLDOWN_MS = 30 * 60 * 1000; // pas plus d'une notif toutes les 30 min
+  var THRESHOLD_WILTED_H = 0.5;   // après 2h sans eau → fanée
+  var THRESHOLD_DEAD_H = 1;     // après 4h sans eau → morte
+  var NOTIFY_AFTER_H = 1000;       // envoyer une notification après 1h sans arrosage
+  var NOTIFY_COOLDOWN_MS = 30 * 60 * 1000000; // pas plus d'une notif toutes les 30 min
   var TICK_MS = 60 * 1000;      // recalcul toutes les minutes
   var TIMER_UPDATE_MS = 1000;   // mise à jour du compteur chaque seconde
 
@@ -63,7 +63,7 @@
    * @returns {'normal'|'wilted'|'dead'}
    */
   function getPlantState(elapsedHours) {
-    if (elapsedHours === null) return "wilted";
+    if (elapsedHours === null) return "normal";
     if (elapsedHours < THRESHOLD_WILTED_H) return "normal";
     if (elapsedHours < THRESHOLD_DEAD_H) return "wilted";
     return "dead";
