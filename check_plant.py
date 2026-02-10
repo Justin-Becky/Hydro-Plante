@@ -84,7 +84,7 @@ def should_send_notification(state, elapsed_hours):
             else:
                 now = datetime.now()
             
-            if now - last_notif < timedelta(hours=2):
+            if now - last_notif < timedelta(minutes=25):
                 return False
         except ValueError:
             # Si erreur de parsing, on envoie quand même
