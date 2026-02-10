@@ -22,6 +22,8 @@
 
   var STORAGE_KEY = "hydroPlante_lastWatering";
   var NOTIFY_LAST_KEY = "hydroPlante_lastNotify";
+  var DRINK_COUNT_KEY = "hydroPlante_drinkCount";
+  var DRINK_DATE_KEY = "hydroPlante_drinkDate";
 
   var plantArea = document.getElementById("plantArea");
   var plantEmoji = document.getElementById("plantEmoji");
@@ -45,6 +47,62 @@
     wilted: "La plante a soif… Pense à boire !",
     dead: "La plante est morte. Arrose-la pour la revigorer."
   };
+
+  /**
+   * Retourne la date du jour sous forme "AAAA-M-J".
+   */
+  function getTodayString() {
+    var d = new Date();
+    return d.getFullYear() + '-' + d.getMonth() + '-' + d.getDate();
+  }
+
+  /**
+   * Retourne le nombre de verres aujourd'hui (remet à 0 si nouveau jour).
+   */
+  function getDrinkCount() {
+    if (localStorage.getItem(DRINK_DATE_KEY) !== getTodayString()) {
+      localStorage.setItem(DRINK_DATE_KEY, getTodayString());
+      localStorage.setItem(DRINK_COUNT_KEY, '0');
+    }
+    return parseInt(localStorage.getItem(DRINK_COUNT_KEY) || '0', 10);
+  }
+
+  /**
+   * Incrémente le compteur et met à jour l'affichage.
+   */
+  function incrementDrinkCount() {
+    var count = getDrinkCount() + 1;
+    localStorage.setItem(DRINK_COUNT_KEY, count.toString());
+    localStorage.setItem(DRINK_DATE_KEY, getTodayString());
+    renderDrinkCounter(count);
+  }
+
+  /**
+   * Affiche le compteur et les points.
+   */
+  function renderDrinkCounter(count) {
+    var countEl = document.getElementById('drinkCount');
+    var dotsEl = document.getElementById('drinkDots');
+    if (countEl) countEl.textContent = count;
+    if (!dotsEl) return;
+    var html = '';
+    for (var i = 0; i < Math.min(count, 8); i++) {
+      html += '<span class="drink-dot"></span>';
+    }
+    if (count > 8) {
+      html += '<span class="drink-dot-extra">+' + (count - 8) + '</span>';
+    }
+    dotsEl.innerHTML = html;
+  }
+
+  /**
+   * Vérifie si minuit est passé et remet le compteur à 0 si nécessaire.
+   */
+  function checkMidnightReset() {
+    if (localStorage.getItem(DRINK_DATE_KEY) !== getTodayString()) {
+      renderDrinkCounter(getDrinkCount()); // getDrinkCount remet à 0 automatiquement
+    }
+  }
 
   /**
    * Retourne le timestamp du dernier arrosage (ou null).
@@ -163,11 +221,12 @@
     var last = getLastWatering();
     var elapsedMs = last ? (Date.now() - last) : null;
     var elapsedHours = elapsedMs ? elapsedMs / (60 * 60 * 1000) : null;
-    
+
     var state = getPlantState(elapsedHours);
     renderPlant(state);
     updateTimer(elapsedMs);
     maybeSendNotification(elapsedHours);
+    checkMidnightReset();
   }
 
   /**
@@ -230,6 +289,7 @@
     tick();
     requestNotificationPermission();
     updatePlantStateOnGitHub();
+    incrementDrinkCount();
 
     // Animation du bouton
     waterBtn.style.transform = "scale(0.95)";
@@ -245,6 +305,16 @@
   
   // Premier affichage
   tick();
+
+  // Initialiser le compteur de verres (sans animation)
+  var drinkDotsEl = document.getElementById('drinkDots');
+  if (drinkDotsEl) drinkDotsEl.classList.add('no-anim');
+  renderDrinkCounter(getDrinkCount());
+  requestAnimationFrame(function() {
+    requestAnimationFrame(function() {
+      if (drinkDotsEl) drinkDotsEl.classList.remove('no-anim');
+    });
+  });
   
   // Mise à jour régulière de l'état de la plante
   setInterval(tick, TICK_MS);
