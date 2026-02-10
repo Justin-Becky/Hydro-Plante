@@ -15,6 +15,11 @@
   var TICK_MS = 60 * 1000;      // recalcul toutes les minutes
   var TIMER_UPDATE_MS = 1000;   // mise à jour du compteur chaque seconde
 
+  // --- GitHub API ---
+  var GITHUB_TOKEN = "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";
+  var GITHUB_REPO = "Justin-Becky/Hydro-Plante";
+  var GITHUB_FILE = "plant_state.json";
+
   var STORAGE_KEY = "hydroPlante_lastWatering";
   var NOTIFY_LAST_KEY = "hydroPlante_lastNotify";
 
@@ -175,13 +180,57 @@
   }
 
   /**
+   * Met à jour plant_state.json sur GitHub via l'API.
+   */
+  function updatePlantStateOnGitHub() {
+    var apiUrl = "https://api.github.com/repos/" + GITHUB_REPO + "/contents/" + GITHUB_FILE;
+    var headers = {
+      "Authorization": "token " + GITHUB_TOKEN,
+      "Accept": "application/vnd.github.v3+json"
+    };
+
+    // 1. Lire le fichier pour obtenir le SHA
+    fetch(apiUrl, { headers: headers })
+      .then(function(res) { return res.json(); })
+      .then(function(data) {
+        var newState = {
+          last_watering: new Date().toISOString(),
+          last_notification: null
+        };
+        var newContent = btoa(JSON.stringify(newState, null, 2));
+
+        // 2. Écrire le nouveau contenu
+        return fetch(apiUrl, {
+          method: "PUT",
+          headers: Object.assign({ "Content-Type": "application/json" }, headers),
+          body: JSON.stringify({
+            message: "Arrosage de la plante [web]",
+            content: newContent,
+            sha: data.sha
+          })
+        });
+      })
+      .then(function(res) {
+        if (res.ok) {
+          console.log("✅ plant_state.json mis à jour sur GitHub");
+        } else {
+          console.error("❌ Erreur mise à jour GitHub:", res.status);
+        }
+      })
+      .catch(function(err) {
+        console.error("❌ Erreur réseau:", err);
+      });
+  }
+
+  /**
    * Gestion du clic / toucher sur "Arroser la plante".
    */
   function onWaterClick() {
     setLastWatering();
     tick();
     requestNotificationPermission();
-    
+    updatePlantStateOnGitHub();
+
     // Animation du bouton
     waterBtn.style.transform = "scale(0.95)";
     setTimeout(function() {
