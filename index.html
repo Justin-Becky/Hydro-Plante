@@ -28,12 +28,27 @@
       <div class="plant-area" id="plantArea" aria-live="polite" role="status">
         <img class="plant-emoji" id="plantEmoji" alt="État de la plante" />
         <p class="plant-status" id="plantStatus"></p>
+        <div class="streak-counter" id="streakCounter">
+          <div class="streak-label">Série</div>
+          <div class="streak-value" id="streakValue">0</div>
+          <div class="streak-flame">🔥</div>
+          <div class="streak-sub">jours</div>
+        </div>
         <div class="drink-counter" id="drinkCounter">
           <div class="drink-counter-label">Verres</div>
           <div class="drink-counter-value" id="drinkCount">0</div>
           <div class="drink-counter-sub">aujourd'hui</div>
           <div class="drink-dots" id="drinkDots"></div>
         </div>
+      </div>
+      <!-- Menu d'évolution (icône toujours visible, menu s'ouvre au clic) -->
+      <div class="evo-container" id="evoContainer">
+        <button class="evo-trigger" id="evoTrigger" type="button"
+                aria-label="Styles de plante" aria-expanded="false">
+          <span class="evo-icon">🌿</span>
+          <span class="evo-trigger-label" id="evoTriggerLabel">Aucune évolution</span>
+        </button>
+        <div class="evo-menu" id="evoMenu"></div>
       </div>
       <button type="button" class="water-btn" id="waterBtn">Arroser la plante</button>
     </main>
