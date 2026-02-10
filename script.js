@@ -68,7 +68,7 @@
       dead:   "images/morte.png"
     },
     fantastique_1: {
-      unlockStreak: 7,
+      unlockStreak: 21,
       label: "Fantastique 1",
       normal: "images/fantastique_1.png",
       wilted: "images/fannée.png",
@@ -82,7 +82,7 @@
       dead:   "images/morte.png"
     },
     fantastique_2: {
-      unlockStreak: 14,
+      unlockStreak: 28,
       label: "Fantastique 2",
       normal: "images/fantastique_2.png",
       wilted: "images/fannée.png",
@@ -263,7 +263,8 @@
       html = '<p class="evo-menu-empty">Aucune évolution disponible.<br>' +
              'Continue jusqu\'à ' + next + ' jours de série 🔥</p>';
     } else {
-      html = '<p class="evo-menu-title">Choisir un style</p>';
+      html = '<p class="evo-menu-title">Choisir un style</p>' +
+             '<div class="evo-items-grid">';
       for (var styleId in PLANT_STYLES) {
         var style    = PLANT_STYLES[styleId];
         var isActive = styleId === selected;
@@ -271,19 +272,24 @@
         var cls      = 'evo-item' +
                        (isActive  ? ' evo-item--active'  : '') +
                        (isLocked  ? ' evo-item--locked'  : '');
-        var check    = isActive ? '<span class="evo-item-check">✓</span>' :
-                                  '<span class="evo-item-check"></span>';
+        var badge    = isActive ? '<span class="evo-item-badge">✓</span>' : '';
+        var lock     = isLocked ? '<span class="evo-item-lock">🔒</span>'  : '';
         var meta     = isLocked
-          ? '<span class="evo-item-meta">' + style.unlockStreak + 'j 🔒</span>'
+          ? '<span class="evo-item-meta">' + style.unlockStreak + ' j</span>'
           : '';
         var disabled = isLocked ? ' disabled' : '';
         html += '<button type="button" class="' + cls + '"' + disabled +
                 ' data-style="' + styleId + '">' +
-                check +
+                '<div class="evo-item-thumb-wrap">' +
+                  '<img class="evo-item-thumb" src="' + style.normal +
+                       '" alt="' + style.label + '" loading="lazy">' +
+                  badge + lock +
+                '</div>' +
                 '<span class="evo-item-label">' + style.label + '</span>' +
                 meta +
                 '</button>';
       }
+      html += '</div>';
     }
 
     menu.innerHTML = html;
@@ -592,7 +598,7 @@
 
   // ─── Enregistrement du Service Worker ────────────────────────────────────────
 
-  if ('serviceWorker' in navigator) {
+  if ('serviceWorker' in navigator && location.hostname !== 'localhost' && location.hostname !== '127.0.0.1') {
     window.addEventListener('load', function () {
       navigator.serviceWorker.register('sw.js').catch(function (err) {
         console.warn('SW non enregistré :', err);
