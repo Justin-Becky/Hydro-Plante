@@ -4,7 +4,7 @@
  * Sync différée : rejoue la mise à jour GitHub quand la connexion revient.
  */
 
-var CACHE_NAME = 'hydro-plante-v3';
+var CACHE_NAME = 'hydro-plante-v4';
 
 var ASSETS_TO_CACHE = [
   '/',
@@ -77,11 +77,32 @@ self.addEventListener('fetch', function (e) {
     return;
   }
 
-  // Assets locaux → cache-first, mise en cache des nouvelles ressources
-  e.respondWith(
-    caches.match(e.request).then(function (cached) {
-      if (cached) return cached;
-      return fetch(e.request).then(function (response) {
+  // Assets locaux → network-first (fichiers qui changent souvent),
+  //                  cache-first pour les images (changent rarement)
+  var isImage = url.pathname.match(/\.(png|jpg|jpeg|gif|webp|svg|ico)$/i);
+
+  if (isImage) {
+    // Images → cache-first (rapide, changent rarement)
+    e.respondWith(
+      caches.match(e.request).then(function (cached) {
+        if (cached) return cached;
+        return fetch(e.request).then(function (response) {
+          if (response && response.ok) {
+            var clone = response.clone();
+            caches.open(CACHE_NAME).then(function (cache) {
+              cache.put(e.request, clone);
+            });
+          }
+          return response;
+        }).catch(function () {
+          return new Response('', { status: 503 });
+        });
+      })
+    );
+  } else {
+    // HTML, JS, CSS → network-first (toujours à jour)
+    e.respondWith(
+      fetch(e.request).then(function (response) {
         if (response && response.ok) {
           var clone = response.clone();
           caches.open(CACHE_NAME).then(function (cache) {
@@ -90,9 +111,10 @@ self.addEventListener('fetch', function (e) {
         }
         return response;
       }).catch(function () {
-        // Pas de cache et pas de réseau : retourner une réponse vide
-        return new Response('', { status: 503 });
-      });
-    })
-  );
+        return caches.match(e.request).then(function (cached) {
+          return cached || new Response('', { status: 503 });
+        });
+      })
+    );
+  }
 });
