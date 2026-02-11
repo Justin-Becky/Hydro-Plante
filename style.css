@@ -74,6 +74,28 @@ body {
   letter-spacing: -0.02em;
 }
 
+.user-indicator {
+  font-size: clamp(0.65rem, 1.8vw, 0.85rem);
+  font-weight: 500;
+  color: var(--color-text-muted);
+  margin-top: 0.15rem;
+  text-align: center;
+}
+
+.sync-status {
+  font-size: clamp(0.6rem, 1.6vw, 0.75rem);
+  font-weight: 500;
+  text-align: center;
+  min-height: 1.2em;
+  margin-top: 0.4rem;
+  transition: opacity 0.3s ease;
+}
+
+.sync-syncing { color: var(--color-text-muted); }
+.sync-success { color: var(--color-primary); }
+.sync-error   { color: #c62828; }
+.sync-pending { color: var(--color-wilted); }
+
 .main {
   flex: 1;
   min-height: 0;
@@ -164,6 +186,25 @@ body {
 
 .timer-container.danger .timer-display {
   color: var(--color-dead);
+}
+
+.timer-container.night-mode {
+  background: linear-gradient(135deg, rgba(63, 81, 181, 0.08) 0%, rgba(103, 58, 183, 0.12) 100%);
+  border-color: rgba(63, 81, 181, 0.2);
+  animation: none;
+}
+
+.timer-container.night-mode .timer-display {
+  color: #5c6bc0;
+}
+
+.timer-container.night-mode .timer-label {
+  color: #5c6bc0;
+}
+
+.plant-area.night .plant-status {
+  color: #5c6bc0;
+  font-style: italic;
 }
 
 /* --- Plante (MAXIMISÉE) --- */

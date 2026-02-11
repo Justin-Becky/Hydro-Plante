@@ -2,33 +2,48 @@ name: Check Plant Status
 
 on:
   schedule:
-    # Exécuter toutes les 30 minutes
+    # Vérification toutes les 30 minutes
     - cron: '*/30 * * * *'
+    # Rappel du matin : 12:00 UTC = 7:00 AM EST (8:00 AM en été)
+    - cron: '0 12 * * *'
   workflow_dispatch:  # Permet de lancer manuellement pour tester
 
 jobs:
   check-plant:
     runs-on: ubuntu-latest
-    
+
     steps:
     - name: Checkout repository
       uses: actions/checkout@v3
       with:
         token: ${{ secrets.GITHUB_TOKEN }}
-    
+
     - name: Set up Python
       uses: actions/setup-python@v4
       with:
         python-version: '3.10'
-    
+
+    - name: Determine if morning reminder
+      id: check_morning
+      run: |
+        HOUR=$(date -u +%H)
+        MINUTE=$(date -u +%M)
+        if [ "$HOUR" = "12" ] && [ "$MINUTE" -lt "5" ]; then
+          echo "MORNING_REMINDER=true" >> $GITHUB_ENV
+        else
+          echo "MORNING_REMINDER=false" >> $GITHUB_ENV
+        fi
+
     - name: Run plant check script
       env:
         SENDER_EMAIL: ${{ secrets.SENDER_EMAIL }}
         SENDER_PASSWORD: ${{ secrets.SENDER_PASSWORD }}
         RECIPIENT_EMAIL: ${{ secrets.RECIPIENT_EMAIL }}
+        RECIPIENT_EMAIL_2: ${{ secrets.RECIPIENT_EMAIL_2 }}
+        MORNING_REMINDER: ${{ env.MORNING_REMINDER }}
       run: |
         python check_plant.py
-    
+
     - name: Commit updated plant state
       run: |
         git config --local user.email "github-actions[bot]@users.noreply.github.com"
