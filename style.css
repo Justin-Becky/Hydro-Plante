@@ -402,7 +402,7 @@ body {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  min-width: min(100%, 17rem);
+  min-width: min(70%, 14rem);
   min-height: clamp(2.4rem, 7vh, 3rem);
   padding: clamp(0.45rem, 1.2vh, 0.75rem) clamp(0.9rem, 3.5vw, 1.5rem);
   font-size: clamp(0.85rem, 2.3vw, 1.05rem);
@@ -443,6 +443,105 @@ body {
 .water-btn:focus-visible {
   outline: 2px solid #1b5e20;
   outline-offset: 3px;
+}
+
+/* --- Boutons d'action (arroser + pause) --- */
+.action-buttons {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  flex-shrink: 0;
+}
+
+/* --- Pause --- */
+.pause-container {
+  position: relative;
+}
+
+.pause-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: clamp(2.4rem, 7vh, 3rem);
+  padding: clamp(0.45rem, 1.2vh, 0.75rem) clamp(0.7rem, 2.5vw, 1.1rem);
+  font-size: clamp(0.75rem, 2vw, 0.9rem);
+  font-weight: 600;
+  color: var(--color-primary-dark);
+  background: rgba(46, 125, 50, 0.1);
+  border: 2px solid var(--color-primary);
+  border-radius: var(--radius-btn);
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.pause-btn:hover {
+  background: rgba(46, 125, 50, 0.2);
+}
+
+.pause-btn:active {
+  transform: scale(0.97);
+}
+
+.pause-btn.cancel {
+  color: #c62828;
+  background: rgba(198, 40, 40, 0.08);
+  border-color: #c62828;
+}
+
+.pause-btn.cancel:hover {
+  background: rgba(198, 40, 40, 0.15);
+}
+
+.pause-menu {
+  display: none;
+  position: absolute;
+  bottom: calc(100% + 0.4rem);
+  left: 50%;
+  transform: translateX(-50%);
+  background: #fff;
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-md);
+  padding: 0.3rem;
+  z-index: 20;
+  gap: 0.2rem;
+  flex-direction: column;
+}
+
+.pause-menu.open {
+  display: flex;
+}
+
+.pause-option {
+  padding: 0.5rem 1rem;
+  font-size: clamp(0.75rem, 2vw, 0.9rem);
+  font-weight: 500;
+  color: var(--color-text);
+  background: transparent;
+  border: none;
+  border-radius: 0.5rem;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: background 0.15s ease;
+}
+
+.pause-option:hover {
+  background: rgba(46, 125, 50, 0.1);
+}
+
+/* Timer en pause */
+.timer-container.paused {
+  background: linear-gradient(135deg, rgba(255, 152, 0, 0.08) 0%, rgba(255, 193, 7, 0.12) 100%);
+  border-color: rgba(255, 152, 0, 0.25);
+  animation: none;
+}
+
+.timer-container.paused .timer-display {
+  color: #e65100;
+}
+
+.timer-container.paused .timer-label {
+  color: #e65100;
 }
 
 /* --- Menu d'évolution --- */

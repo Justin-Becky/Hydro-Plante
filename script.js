@@ -76,6 +76,8 @@
   var DIED_TODAY_KEY       = userKey("diedToday");
   var STYLE_KEY            = userKey("selectedStyle");
   var UNLOCKED_STYLES_KEY  = userKey("unlockedStyles");
+  var PAUSE_END_KEY        = userKey("pauseEndTime");
+  var PAUSE_ELAPSED_KEY    = userKey("pauseElapsedMs");
 
   // --- Migration localStorage (une seule fois pour Justin) ---
   function migrateLocalStorageForUser() {
@@ -254,6 +256,159 @@
     var timerLabel = document.querySelector(".timer-label");
     if (timerLabel) timerLabel.textContent = "Dernière hydratation";
     if (plantArea) plantArea.classList.remove("night");
+  }
+
+  // ─── Pause ──────────────────────────────────────────────────────────────────
+
+  var PAUSE_OPTIONS = [
+    { label: "30 min", ms: 30 * 60 * 1000 },
+    { label: "1h",     ms: 60 * 60 * 1000 },
+    { label: "2h",     ms: 2 * 60 * 60 * 1000 }
+  ];
+
+  var pauseMenuOpen = false;
+
+  function isPaused() {
+    var end = localStorage.getItem(PAUSE_END_KEY);
+    if (!end) return false;
+    if (Date.now() >= parseInt(end, 10)) {
+      // Pause expirée : reprendre le timer là où il était
+      resumeFromPause();
+      return false;
+    }
+    return true;
+  }
+
+  function getPauseRemaining() {
+    var end = localStorage.getItem(PAUSE_END_KEY);
+    if (!end) return 0;
+    return Math.max(0, parseInt(end, 10) - Date.now());
+  }
+
+  function startPause(durationMs) {
+    var last      = getLastWatering();
+    var elapsedMs = last ? (Date.now() - last) : 0;
+
+    localStorage.setItem(PAUSE_END_KEY, (Date.now() + durationMs).toString());
+    localStorage.setItem(PAUSE_ELAPSED_KEY, elapsedMs.toString());
+
+    closePauseMenu();
+    tick();
+  }
+
+  function resumeFromPause() {
+    var savedElapsed = localStorage.getItem(PAUSE_ELAPSED_KEY);
+    if (savedElapsed) {
+      // Ajuster lastWatering pour que le timer reprenne là où il était
+      var elapsedMs = parseInt(savedElapsed, 10);
+      localStorage.setItem(STORAGE_KEY, (Date.now() - elapsedMs).toString());
+    }
+    localStorage.removeItem(PAUSE_END_KEY);
+    localStorage.removeItem(PAUSE_ELAPSED_KEY);
+  }
+
+  function cancelPause() {
+    resumeFromPause();
+    tick();
+  }
+
+  function renderPauseState() {
+    var remaining    = getPauseRemaining();
+    var totalMinutes = Math.ceil(remaining / (60 * 1000));
+    var hours        = Math.floor(totalMinutes / 60);
+    var minutes      = totalMinutes % 60;
+
+    var timeStr = hours > 0
+      ? hours + "h" + (minutes > 0 ? " " + minutes + "min" : "")
+      : minutes + "min";
+
+    plantStatus.textContent = "En pause — " + timeStr + " restantes";
+
+    if (timerContainer) timerContainer.className = "timer-container paused";
+
+    // Afficher le timer figé à la valeur au moment de la pause
+    var savedElapsed = localStorage.getItem(PAUSE_ELAPSED_KEY);
+    if (savedElapsed) {
+      var elapsedMs    = parseInt(savedElapsed, 10);
+      var elapsedTotal = Math.floor(elapsedMs / (60 * 1000));
+      var h = Math.floor(elapsedTotal / 60);
+      var m = elapsedTotal % 60;
+      if (timerHours)   timerHours.textContent   = h;
+      if (timerMinutes) timerMinutes.textContent  = m.toString().padStart(2, "0");
+    }
+
+    var timerLabel = document.querySelector(".timer-label");
+    if (timerLabel) timerLabel.textContent = "En pause";
+
+    plantArea.className = "plant-area normal";
+
+    // Afficher le bouton "Annuler pause"
+    updatePauseButton(true);
+  }
+
+  function updatePauseButton(paused) {
+    var pauseBtn  = document.getElementById("pauseBtn");
+    var cancelBtn = document.getElementById("cancelPauseBtn");
+    if (pauseBtn)  pauseBtn.style.display  = paused ? "none" : "";
+    if (cancelBtn) cancelBtn.style.display = paused ? "" : "none";
+  }
+
+  function togglePauseMenu() {
+    if (pauseMenuOpen) {
+      closePauseMenu();
+    } else {
+      openPauseMenu();
+    }
+  }
+
+  function openPauseMenu() {
+    var menu = document.getElementById("pauseMenu");
+    if (menu) menu.classList.add("open");
+    pauseMenuOpen = true;
+  }
+
+  function closePauseMenu() {
+    var menu = document.getElementById("pauseMenu");
+    if (menu) menu.classList.remove("open");
+    pauseMenuOpen = false;
+  }
+
+  function initPauseButtons() {
+    var pauseBtn  = document.getElementById("pauseBtn");
+    var cancelBtn = document.getElementById("cancelPauseBtn");
+
+    if (pauseBtn) {
+      pauseBtn.addEventListener("click", function (e) {
+        e.stopPropagation();
+        togglePauseMenu();
+      });
+    }
+
+    if (cancelBtn) {
+      cancelBtn.addEventListener("click", function () {
+        cancelPause();
+      });
+    }
+
+    // Options du menu
+    var menuItems = document.querySelectorAll(".pause-option");
+    for (var i = 0; i < menuItems.length; i++) {
+      (function (btn) {
+        btn.addEventListener("click", function (e) {
+          e.stopPropagation();
+          var ms = parseInt(btn.getAttribute("data-ms"), 10);
+          startPause(ms);
+        });
+      })(menuItems[i]);
+    }
+
+    // Fermer le menu au clic ailleurs
+    document.addEventListener("click", function () {
+      if (pauseMenuOpen) closePauseMenu();
+    });
+
+    // État initial
+    updatePauseButton(isPaused());
   }
 
   // ─── Compteur de verres ──────────────────────────────────────────────────────
@@ -651,12 +806,21 @@
     var nightType = getNightModeType();
 
     if (nightType !== null) {
+      updatePauseButton(false);
       renderPlant("normal");
       renderNightMode(nightType);
       return;
     }
 
     clearNightMode();
+
+    if (isPaused()) {
+      renderPlant("normal");
+      renderPauseState();
+      return;
+    }
+
+    updatePauseButton(false);
 
     var last         = getLastWatering();
     var elapsedMs    = last ? (Date.now() - last) : null;
@@ -672,6 +836,7 @@
 
   function tickTimer() {
     if (getNightModeType() !== null) return;
+    if (isPaused()) return;
 
     var last      = getLastWatering();
     var elapsedMs = last ? (Date.now() - last) : null;
@@ -793,6 +958,10 @@
   // ─── Action arrosage ─────────────────────────────────────────────────────────
 
   function onWaterClick() {
+    // Annuler la pause si active (on arrose = on reprend)
+    localStorage.removeItem(PAUSE_END_KEY);
+    localStorage.removeItem(PAUSE_ELAPSED_KEY);
+
     setLastWatering();
     tick();
     requestNotificationPermission();
@@ -830,6 +999,9 @@
 
   // Initialiser le menu d'évolution
   initEvoPicker();
+
+  // Initialiser les boutons de pause
+  initPauseButtons();
 
   // Premier affichage
   tick();

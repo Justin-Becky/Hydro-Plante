@@ -51,7 +51,18 @@
         </button>
         <div class="evo-menu" id="evoMenu"></div>
       </div>
-      <button type="button" class="water-btn" id="waterBtn">Arroser la plante</button>
+      <div class="action-buttons">
+        <button type="button" class="water-btn" id="waterBtn">Arroser la plante</button>
+        <div class="pause-container">
+          <button type="button" class="pause-btn" id="pauseBtn">Pause</button>
+          <button type="button" class="pause-btn cancel" id="cancelPauseBtn" style="display:none">Annuler pause</button>
+          <div class="pause-menu" id="pauseMenu">
+            <button type="button" class="pause-option" data-ms="1800000">30 min</button>
+            <button type="button" class="pause-option" data-ms="3600000">1h</button>
+            <button type="button" class="pause-option" data-ms="7200000">2h</button>
+          </div>
+        </div>
+      </div>
       <div class="sync-status" id="syncStatus" aria-live="polite"></div>
     </main>
   </div>

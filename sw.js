@@ -4,7 +4,7 @@
  * Sync différée : rejoue la mise à jour GitHub quand la connexion revient.
  */
 
-var CACHE_NAME = 'hydro-plante-v4';
+var CACHE_NAME = 'hydro-plante-v5';
 
 var ASSETS_TO_CACHE = [
   '/',
