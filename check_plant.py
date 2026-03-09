@@ -12,6 +12,9 @@ from email.mime.multipart import MIMEMultipart
 from datetime import datetime, timedelta, timezone
 from zoneinfo import ZoneInfo
 
+# On / Off des emails
+EMAILS = False  # Mettre à True pour activer les emails
+
 # Configuration
 PLANT_STATE_FILE = "plant_state.json"
 THRESHOLD_WILTED_H = 2  # heures sans eau → fanée
@@ -241,14 +244,17 @@ def main():
             print("🌙 Nuit : notification ignorée")
             continue
 
-        if should_send_notification(user_state, elapsed_hours):
-            recipient = os.environ.get(config["env_var"])
-            if recipient and send_email(recipient, plant_status, elapsed_hours):
-                user_state["last_notification"] = datetime.now(timezone.utc).isoformat()
-                state[user_name] = user_state
-                state_changed = True
+        if EMAILS:
+            if should_send_notification(user_state, elapsed_hours):
+                recipient = os.environ.get(config["env_var"])
+                if recipient and send_email(recipient, plant_status, elapsed_hours):
+                    user_state["last_notification"] = datetime.now(timezone.utc).isoformat()
+                    state[user_name] = user_state
+                    state_changed = True
+            else:
+                print("Pas de notification à envoyer")
         else:
-            print("Pas de notification à envoyer")
+            continue
 
     if state_changed:
         save_plant_state(state)

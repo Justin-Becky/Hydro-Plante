@@ -6,4 +6,5 @@
 et je lui envoie un couriel a chaque matin pour être sur quelle y pense.
 9. Recevoir des couriels les deux 
 10. S'assurer que quand l'UI click sur le bouton, que ca update github
+11. Rajouter un bouton pour faire "pause" de X temps pour ne pas perdre sa progression si jamais par exemple on a une pratique de soccer et qu'on ne peux pas sortir notre cell pour remplir notre eau
 
